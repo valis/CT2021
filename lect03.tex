@@ -39,6 +39,8 @@
 \renewcommand{\Vec}{\cat{Vec}}
 \newcommand{\Mat}{\cat{Mat}}
 \newcommand{\Num}{\cat{Num}}
+\newcommand{\fs}[1]{\mathrm{#1}}
+\newcommand{\Hom}{\fs{Hom}}
 
 \newcommand{\im}{\mathrm{Im}}
 \newcommand{\bool}{\mathrm{Bool}}
@@ -219,7 +221,7 @@
 Пусть $\C$ -- произвольная категория, тогда \emph{дуальная} ей категория $\C^{op}$ -- это категория, определяемая следующим образом:
 \begin{itemize}
 \item Объекты $\C^{op}$ совпадают с объектами $\C$.
-\item Если $X$, $Y$ -- объекты $\C^{op}$, то $Hom_{\C^{op}}(X,Y)$ определяется как $Hom_\C(Y,X)$.
+\item Если $X$, $Y$ -- объекты $\C^{op}$, то $\Hom_{\C^{op}}(X,Y)$ определяется как $\Hom_\C(Y,X)$.
 \item Композиция и тождественные морфизмы определяются так же, как в $\C$.
 \end{itemize}
 \end{frame}
