@@ -1,0 +1,90 @@
+\documentclass[draft]{article}
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[all]{xy}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\D}{\cat{D}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\FinSet}{\cat{FinSet}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\CMon}{\cat{CMon}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+\newcommand{\fs}[1]{\mathrm{#1}}
+\newcommand{\Ob}{\fs{Ob}}
+\newcommand{\Hom}{\fs{Hom}}
+
+\newenvironment{tolerant}[1]{\par\tolerance=#1\relax}{\par}
+
+\begin{document}
+
+\title{Задания}
+\maketitle
+
+\begin{enumerate}
+
+\item Пусть $\C$ -- категория предпорядка, а $\D$ -- нет.
+\begin{enumerate}
+\item Могут ли $\C$ и $\D$ быть изоморфны?
+\item Могут ли $\C$ и $\D$ быть эквивалентны?
+\end{enumerate}
+
+\item Пусть $\C$ -- категория с одним объектом, а $\D$ -- нет.
+\begin{enumerate}
+\item Могут ли $\C$ и $\D$ быть изоморфны?
+\item Могут ли $\C$ и $\D$ быть эквивалентны?
+\end{enumerate}
+
+\item Пусть $\C$ -- дискретная категория, а $\D$ -- нет.
+\begin{enumerate}
+\item Могут ли $\C$ и $\D$ быть изоморфны?
+\item Могут ли $\C$ и $\D$ быть эквивалентны?
+\end{enumerate}
+
+\item Пусть $\C$ -- группоид, а $\D$ -- нет.
+\begin{enumerate}
+\item Могут ли $\C$ и $\D$ быть изоморфны?
+\item Могут ли $\C$ и $\D$ быть эквивалентны?
+\end{enumerate}
+
+\item Докажите, что $\Num$ эквивалентна $\FinSet$. Изоморфны ли эти категории?
+
+\item Докажите, что $\Mat$ эквивалентна $\Mat^{op}$. Изоморфны ли эти категории?
+
+\item Докажите, что $\FinSet$ не эквивалентна $\Set$.
+
+\item Пусть $F, G : \C \to \D$ -- пара функторов.
+Естественное преобразование $\alpha : F \to G$ называется \emph{естественным изоморфизмом}, если для любого объекта $X$ в $\C$ морфизм $\alpha_X : F(X) \to G(X)$ является изоморфизмом.
+
+Докажите, что $\alpha : F \to G$ -- естественный изоморфизм тогда и только тогда, когда $\alpha$ -- изоморфизм в категории $\D^\C$.
+
+\item Пусть $\C$ -- декартова категория. Докажите, что функтор $- \times 1$ изоморфен тождественному функтору в $\C^\C$.
+
+\item Пусть $\pmb{\rightrightarrows}$ -- категория, состоящая из двух объектов $\{ v, e \}$ и четырех морфизмов $\{ id_v : v \to v, id_e : e \to e, d : v \to e, c : v \to e \}$.
+Докажите, что категории $\cat{Graph}$ (эта категория определяется в предыдущем ДЗ) и $\Set^{\pmb{\rightrightarrows}^{op}}$ эквивалентны.
+Изоморфны ли эти категории?
+
+\item Пусть $\D$ -- рефлективная подкатегория $\C$.
+\begin{enumerate}
+\item Докажите, что рефлектор $\Ob(\C) \to \Ob(\D)$ является фнуктором $R : \C \to \D$.
+\item Докажите, что $\eta$ является естественным преобразованием между $\fs{Id}_\C$ и $i \circ R$, где $i : \D \to \C$ -- функтор вложения.
+\end{enumerate}
+
+\item Пусть $F : \CMon \to \Ab$ -- рефлектор вложения $i : \Ab \to \CMon$.
+\begin{enumerate}
+\item \tolerant{500}{ Приведите пример конечного нетривиального коммутативного моноида $X$, такого что $|F(X)| = |X|$. }
+\item Приведите пример конечного коммутативного моноида $X$, такого что $|F(X)| < |X|$.
+\item Приведите пример коммутативного моноида $X$, такого что $\eta_X : X \to i(F(X))$ -- не сюръективна.
+\item Докажите, что для любого конечного коммутативного моноида $X$ функция $\eta_X : X \to i(F(X))$ является сюръективной. В частности $|F(X)| \leq |X|$.
+\end{enumerate}
+
+\end{enumerate}
+
+\end{document}
