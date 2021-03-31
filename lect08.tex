@@ -43,6 +43,8 @@
 \newcommand{\Mat}{\cat{Mat}}
 \newcommand{\Num}{\cat{Num}}
 \newcommand{\Mod}[1]{#1\text{-}\cat{Mod}}
+\newcommand{\fs}[1]{\mathrm{#1}}
+\newcommand{\id}{\fs{id}}
 
 \newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
 \newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
@@ -79,7 +81,7 @@
               TT(A) \ar[r]_{\mu_A}                          & T(A)
             }
 \quad
-   \xymatrix{ T(A) \ar[r]^{\eta_{T(A)}} \ar[rd]_{id_{T(A)}} & TT(A) \ar[d]^{\mu_A} & T(A) \ar[l]_{T(\eta_A)} \ar[dl]^{id_{T(A)}} \\
+   \xymatrix{ T(A) \ar[r]^{\eta_{T(A)}} \ar[rd]_{\id_{T(A)}} & TT(A) \ar[d]^{\mu_A} & T(A) \ar[l]_{T(\eta_A)} \ar[dl]^{\id_{T(A)}} \\
                                                             & T(A)
             } \]
 \end{defn}
@@ -100,7 +102,7 @@
 \begin{frame}
 \frametitle{Монады из сопряжения}
 Коммутативность диаграммы
-\[ \xymatrix{ GF(A) \ar[rr]^{\eta_{GF(A)}} \ar[rrd]_{id_{GF(A)}} & & GFGF(A) \ar[d]^{G(\epsilon_{F(A)})} & & GF(A) \ar[ll]_{GF(\eta_A)} \ar[dll]^{id_{GF(A)}} \\
+\[ \xymatrix{ GF(A) \ar[rr]^{\eta_{GF(A)}} \ar[rrd]_{\id_{GF(A)}} & & GFGF(A) \ar[d]^{G(\epsilon_{F(A)})} & & GF(A) \ar[ll]_{GF(\eta_A)} \ar[dll]^{\id_{GF(A)}} \\
                                                                  & & GF(A)
             } \]
 следует из свойст единицы и коединицы.
@@ -138,7 +140,7 @@
               T(A) \ar[r]_h                      & A
             }
 \qquad
-   \xymatrix{ A \ar[r]^-{\eta_A} \ar[rd]_{id_A} & T(A) \ar[d]^h \\
+   \xymatrix{ A \ar[r]^-{\eta_A} \ar[rd]_{\id_A} & T(A) \ar[d]^h \\
                                                 & A
             } \]
 \end{defn}
@@ -302,8 +304,19 @@
 \item Модель $M$ теории $T$ в категории $\C$ -- это коллекция объектов $\{ M_s \}_{s \in \mathcal{S}}$ вместе с функциями $M(\sigma) : M_{s_1} \times \ldots \times M_{s_k} \to M_s$
 для каждого функционального символа $\sigma : s_1 \times \ldots \times s_k \to s$, удовлетворяющая аксиомам.
 Морфизмы моделей определяются как раньше.
-\item Например, моноид в $\C$ -- это объект $M$ вместе с морфизмами $e : 1 \to M$ и $\cdot : M \times M \to M$ такой, что следующие диаграммы коммутируют.
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Моноиды в декартовой категории}
+Например, моноид в $\C$ -- это объект $M$ вместе с морфизмами $e : 1 \to M$ и $* : M \times M \to M$ такой, что следующие диаграммы коммутируют.
+\[ \xymatrix{ M \times M \times M \ar[r]^-{* \times \id_M} \ar[d]_{\id_M \times *} & M \times M \ar[d]^{*} \\
+              M \times M \ar[r]_{*}                                                & M
+            }
+\quad
+   \xymatrix{ M \ar[rr]^-{\langle \id_M, e \circ !_M \rangle} \ar[rrd]_{\id_M} & & M \times M \ar[d]^{*} & & M \ar[ll]_-{\langle e \circ !_M, \id_M \rangle} \ar[dll]^{\id_M} \\
+                                                                               & & M
+            } \]
 \end{frame}
 
 \subsection{Свойства категории моделей}
