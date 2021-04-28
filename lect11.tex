@@ -91,6 +91,7 @@
 \newref{lem}{lemma}{Lemma}
 \newref{prop}{proposition}{Proposition}
 \newref{cor}{corollary}{Corollary}
+\newref{remark}{remark}{Remark}
 
 \theoremstyle{definition}
 \newref{defn}{definition}{Definition}
@@ -152,8 +153,8 @@
 \frametitle{Подстановка}
 \begin{itemize}
 \item Пусть $U$ и $V$ -- $\mathcal{S}$-индексированные множества переменных. Тогда подстановка из $U$ в $V$ (обозначается $\rho : U \to V$) -- это просто $V$-индексированное множество термов $\{ \rho(x) \in \fs{Term}(V)_s \}_{(x : s) \in V}$.
-\item Подстановка $(x := a)$ -- это просто $\rho$ такая, что $\rho(x) = a$ и $\rho(y) = y$ для любого $y \neq x$.
-\item Если $\rho : U \to V$ и $t \in \fs{Term}(V)_s$, то $t[\rho]$ -- это терм в $t \in \fs{Term}(U)_s$, который определяется рекурсивно:
+\item Подстановка $(x := a)$ -- это просто такая $\rho$, что $\rho(x) = a$ и $\rho(y) = y$ для любого $y \neq x$.
+\item Если $\rho : U \to V$ и $t \in \fs{Term}(U)_s$, то $t[\rho]$ -- это терм в $t \in \fs{Term}(U)_s$, который определяется рекурсивно:
 \begin{itemize}
 \item Если $t = x$, то $t[\rho] = \rho(x)$.
 \item Если $t = f(t_1, \ldots t_k)$, то $t[\rho] = f(t_1[\rho], \ldots t_k[\rho])$.
@@ -164,9 +165,9 @@
 
 \begin{frame}
 \frametitle{Интерпретация подстановки в термах}
-Если $\rho : U \to V$, то мы определяем $\ll \rho \rr : \ll U \rr \to \ll V \rr$ как $\langle \rho(x) \rangle_{x \in V}$.
+Если $\rho : U \to V$, то мы определяем $\ll \rho \rr : \ll U \rr \to \ll V \rr$ как $\langle \ll \rho(x) \rr \rangle_{x \in V}$.
 \begin{lem}
-Если $t \in \fs{Term}(V)_s$ и $\rho : U \to V$, то $\ll t[\rho] \rr = \ll \rho \rr \circ \ll t \rr$.
+Если $t \in \fs{Term}(V)_s$ и $\rho : U \to V$, то $\ll t[\rho] \rr = \ll t \rr \circ \ll \rho \rr$.
 \end{lem}
 \begin{proof}
 Индукцией по построению $t$.
@@ -176,15 +177,20 @@
 \begin{frame}
 \frametitle{Интерпретация подстановки в формулах}
 \begin{lem}
-Если $\varphi \in \fs{Form}_\Sigma(V)$ и $\rho : U \to V$, то существует (уникальный) морфизм $d_{\varphi[\rho]} \to d_\varphi$ такой, что следующий квадрат является пулбэком:
+Если $\varphi \in \fs{Form} \to d_\varphi$ такой, что следующий квадрат является пулбэком:
 \[ \xymatrix{ d_{\varphi[\rho]} \ar[r] \ar[d]_{\ll \varphi[\rho] \rr} \pb & d_\varphi \ar[d]^{\ll \varphi \rr} \\
               \ll U \rr \ar[r]_-{\ll \rho \rr}        & \ll V \rr
             } \]
 \end{lem}
+Эквивалентно эту лемму можно сформулировать следующим образом: $\ll \varphi[\rho] \rr$ и $\ll \rho\rr^*(\ll \varphi \rr)$ равны как подобъекты $\ll U \rr$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация подстановки в формулах}
 \begin{itemize}
-\item Доказывается индукцией по построению $\varphi$.
+\item Лемма о подстановке доказывается индукцией по построению $\varphi$.
 \item Сейчас мы проверим это утверждение только для атомарных формул, так как мы вводили только их пока.
-\item Для других связок проверим позже.
+\item Для других связок будем проверять по мере их введения.
 \end{itemize}
 \end{frame}
 
@@ -216,7 +222,7 @@
 Во всех наших логиках будут следующие правила вывода:
 \begin{center}
 \AxiomC{}
-\UnaryInfC{$\varphi \sststile{}{V} \psi \land \varphi$}
+\UnaryInfC{$\varphi \sststile{}{V} \varphi$}
 \DisplayProof
 \qquad
 \AxiomC{$\varphi \sststile{}{V} \psi$}
@@ -227,7 +233,7 @@
 
 \begin{center}
 \AxiomC{$\varphi \sststile{}{U} \psi$}
-\UnaryInfC{$\varphi[\rho] \sststile{}{V} \chi[\rho]$}
+\UnaryInfC{$\varphi[\rho] \sststile{}{V} \psi[\rho]$}
 \DisplayProof
 \end{center}
 С добавлением логических связок будут добавляться и правила вывода.
@@ -245,15 +251,21 @@
 \begin{frame}
 \frametitle{Корректность $\top$}
 \begin{itemize}
+\item $\top$ интерпретируется как наибольший подобъект, то есть $\id : \ll V \rr \to \ll V \rr$.
 \item Правило вывода для $\top$:
 \[ \varphi \sststile{}{} \top \]
-\item Чтобы доказать, что эта аксиома всегда корректна, нужно проверить, что для любой подобъект $d_\varphi \hookrightarrow V$ является подобъектом $\ll \top \rr = id_V : V \hookrightarrow V$, что очевидно.
+\item Чтобы доказать, что эта аксиома всегда корректна, нужно проверить, что для любой подобъект $d_\varphi \hookrightarrow \ll V \rr$ является подобъектом $\ll \top \rr = \id : \ll V \rr \hookrightarrow \ll V \rr$, что очевидно.
+\item Лемма о подстановке для $\top$ очевидна:
+\[ \xymatrix{ \ll U \rr \ar[r]^{\ll \rho \rr} \ar[d]_{\id_U} \pb & \ll V \rr \ar[d]^{\id_{\ll V \rr}} \\
+              \ll U \rr \ar[r]_{\ll \rho \rr} & \ll V \rr
+            } \]
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Корректность $\land$}
 \begin{itemize}
+\item $\varphi \land \psi$ интерпретируется как пересечение подобъектов $\ll \varphi \rr \cap \ll \psi \rr$.
 \item Правила вывода для $\land$:
 \begin{center}
 \AxiomC{$\varphi \sststile{}{} \psi$}
@@ -263,15 +275,16 @@
 \end{center}
 
 \begin{center}
-\AxiomC{$\varphi \sststile{}{} \psi \land \chi$}
-\UnaryInfC{$\varphi \sststile{}{} \psi$}
+\AxiomC{}
+\UnaryInfC{$\varphi \land \psi \sststile{}{} \varphi$}
 \DisplayProof
 \quad
-\AxiomC{$\varphi \sststile{}{} \psi \land \chi$}
-\UnaryInfC{$\varphi \sststile{}{} \chi$}
+\AxiomC{}
+\UnaryInfC{$\varphi \land \psi \sststile{}{} \psi$}
 \DisplayProof
 \end{center}
 \item Эти правила уважаются, так как по определению пулбэков стрелка $\ll \varphi \rr \to \ll \psi \rr \cap \ll \chi \rr$ существует тогда и только тогда, когда существуют стрелки $\ll \varphi \rr \to \ll \psi \rr$ и $\ll \varphi \rr \to \ll \chi \rr$.
+\item Лемма о подстановке для $\land$ следует из того факта, что $f^*(X \cap Y) = f^*(X) \cap f^*(Y)$, что проверяется напрямую.
 \end{itemize}
 \end{frame}
 
@@ -324,33 +337,7 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Интерпретация подстановки}
-\begin{itemize}
-\item Так как правила вывода для существования используют подстановку, нам нужно знать как она интерпретируется, чтобы проверить эти правила.
-\item Утверждене: если $\varphi$ -- формула со свободными переменными в $\{ x_1 : s_1, \ldots x_n : s_n \}$ и $t_1$, \ldots $t_n$ -- термы сортов $s_1$, \ldots $s_n$,
-то $\ll \varphi[x_1 \repl t_1, \ldots x_n \repl t_n] \rr$ является пулбэком $d_\varphi$:
-\[ \xymatrix{ d_{\varphi[x_1 \repl t_1, \ldots x_n \repl t_n]} \ar[r] \ar[d]_{\ll \varphi[x_1 \repl t_1, \ldots x_n \repl t_n] \rr} \pb & d_\varphi \ar[d]^{\ll \varphi \rr} \\
-              V \ar[r]_-{\langle t_1, \ldots t_n \rangle}                                                                               & \ll s_1 \rr \times \ldots \times \ll s_n \rr
-            } \]
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Интерпретация подстановки}
-\begin{itemize}
-\item Доказывать это утверждение мы будем индукцией по $\varphi$.
-\item Для $\top$ это очевидно, так как пулбэк тождественного морфизма -- тождественный морфизм.
-\item Проверим для равенства. Пусть $\ll t \rr, \ll t' \rr : \ll s_1 \rr \times \ldots \times \ll s_n \rr \to \ll s' \rr$ и $\ll t_i \rr : V \to \ll s_i \rr$.
-Тогда нужно показать, что морфизм $E \to V$ в диаргамме ниже является уровнителем $\ll t \rr \circ \langle \ll t_1 \rr, \ldots \ll t_n \rr \rangle$ и $\ll t' \rr \circ \langle \ll t_1 \rr, \ldots \ll t_n \rr \rangle$,
-что легко сделать, используя универсальное свойство пулбэков.
-\[ \xymatrix{ E \ar[rr] \ar[d] \pb                                          & & d_{t = t'} \ar[d]^{\ll t = t' \rr} \\
-              V \ar[rr]_-{\langle \ll t_1 \rr, \ldots \ll t_n \rr \rangle}  & & \ll s_1 \rr \times \ldots \times \ll s_n \rr \ar@<-.5ex>[r]_-{\ll t' \rr} \ar@<.5ex>[r]^-{\ll t \rr} & \ll s' \rr
-            } \]
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Интерпретация подстановки в $\exists$}
+\frametitle{Лемма о подстановке для $\exists$}
 \begin{itemize}
 \item Даже если в категории существуют образы всех морфизмов, они могут не коммутировать с пулбэками.
 \item Категория называется \emph{регулярной}, если у всех морфизмов существуют образы, и они стабильны относительно пулбэков.
@@ -363,17 +350,17 @@
 \begin{itemize}
 \item Правила вывода для $\exists$:
 \begin{center}
-\AxiomC{$\exists (x : s) \varphi \sststile{}{} \psi$}
-\UnaryInfC{$\varphi \sststile{}{} \psi$}
+\AxiomC{$\exists (x : s) \varphi \sststile{}{V} \psi$}
+\UnaryInfC{$\varphi \sststile{}{V,x} \psi$}
 \DisplayProof
 \quad
-\AxiomC{$\varphi \sststile{}{} \psi$}
-\UnaryInfC{$\exists (x : s) \varphi \sststile{}{} \psi$}
+\AxiomC{$\varphi \sststile{}{V,x} \psi$}
+\UnaryInfC{$\exists (x : s) \varphi \sststile{}{V} \psi$}
 \DisplayProof
 \end{center}
-\item Обратите внимание, что $\psi$ определен в контексте $x_1, \ldots x_n$, но используется также и в контексте $x_1, \ldots x_n, x$.
+\item Обратите внимание, что $\psi$ определен в контексте $V$, но используется также и в контексте $V, x$.
 По лемме об интерпретации подстановки $\psi$ во втором контексте интерпретируется как пулбэк.
-\item Используя этот факт, легко показать, что данные правила корректны.
+\item Корректность этих правил остается в качестве упражнения.
 \end{itemize}
 \end{frame}
 
@@ -385,20 +372,35 @@
 \item Категория называется \emph{когерентной}, если она регулярна, для любого объекта $A$ в порядке подобъектов $\Sub(A)$ существуют все конечные копроизведения,
 и для любого морфизма $f : A \to B$ функтор $f^* : \Sub(B) \to \Sub(A)$ сохраняет их.
 \item Эта дополнительная структура -- это в точности то, что необходимо для интерпретации ложного утверждения и дизъюнкций.
+\item $\bot$ интерпретируется как наименьший подобъект, а $\varphi \lor \psi$ интерпретируется как объединение подобъектов $\ll \varphi \rr \cup \ll \psi \rr$.
+\item Лемма о подстановке верна по предположению.
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Дистрибутивность пересечений}
-\begin{prop}
-В когерентной категории пересечении дистрибутивно над объединением подобъектов: $A \cap (B \cup C) \simeq (A \cap B) \cup (A \cap C)$ и $A \cap 0 = 0$.
-\end{prop}
-\begin{proof}
-Функтор $A \cap - : \Sub(X) \to \Sub(X)$ можно определить как композицию
-\[ \Sub(X) \xrightarrow{f^*} \Sub(A) \xrightarrow{\exists_f} \Sub(X) \]
-где $f : A \to X$ и $\exists_f$ -- левый сопряженный к $f^*$.
-Функтор $f^*$ сохраняет копроизведения по предположению когерентности, а $\exists_f$ сохраняет копределы как левый сопряженный.
-\end{proof}
+\frametitle{Корректность интерпретации}
+Правила вывода для $\bot$ и $\lor$:
+\begin{center}
+\AxiomC{}
+\UnaryInfC{$\varphi \sststile{}{} \varphi \lor \psi$}
+\DisplayProof
+\quad
+\AxiomC{}
+\UnaryInfC{$\psi \sststile{}{} \varphi \lor \psi$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\psi \sststile{}{} \varphi$}
+\AxiomC{$\chi \sststile{}{} \varphi$}
+\BinaryInfC{$\psi \lor \chi \sststile{}{} \varphi$}
+\DisplayProof
+\qquad
+\AxiomC{}
+\UnaryInfC{$\bot \sststile{}{} \varphi$}
+\DisplayProof
+\end{center}
+Их корректность следует из универсальных свойств наименьшего подобъекта и объединения.
 \end{frame}
 
 \begin{frame}
@@ -407,6 +409,10 @@
 \begin{prop}
 В когерентной категории существует строгий начальный объект.
 \end{prop}
+\begin{remark}
+Это утверждение верно для любой конечно полной категории, в которой интерпретируется $\bot$.
+В доказательстве нигде не используется $\exists$ и $\lor$.
+\end{remark}
 }
 \begin{proof}
 \only<1>{
@@ -436,16 +442,16 @@
 \begin{itemize}
 \item Правила вывода для $\forall$ дуальны правилам для $\exists$:
 \begin{center}
-\AxiomC{$\varphi \sststile{}{} \forall (x : s) \psi$}
-\UnaryInfC{$\varphi \sststile{}{} \psi$}
+\AxiomC{$\varphi \sststile{}{V} \forall (x : s) \psi$}
+\UnaryInfC{$\varphi \sststile{}{V,x} \psi$}
 \DisplayProof
 \quad
-\AxiomC{$\varphi \sststile{}{} \psi$}
-\UnaryInfC{$\varphi \sststile{}{} \forall (x : s) \psi$}
+\AxiomC{$\varphi \sststile{}{V,x} \psi$}
+\UnaryInfC{$\varphi \sststile{}{V} \forall (x : s) \psi$}
 \DisplayProof
 \end{center}
-\item То есть у нас есть биекция между стрелками $\pi_1^*(\ll \varphi \rr) \to \ll \psi \rr$ в $\Sub(X \times \ll s \rr)$ и $\ll \varphi \rr \to \ll \forall (x : s) \psi \rr$ в $\Sub(X)$, где $\pi_1 : X \times \ll s \rr \to X$.
-\item Таким образом, $\ll \forall (x : s) \psi \rr$ можно определить как $\forall_{\pi_1}(\ll \psi \rr)$, где $\forall_{\pi_1} : \Sub(X \times \ll s \rr) \to \Sub(X)$ -- правый сопряженный к $\pi_1^* : \Sub(X) \to \Sub(X \times \ll s \rr)$.
+\item То есть у нас есть биекция между стрелками $\pi_1^*(\ll \varphi \rr) \to \ll \psi \rr$ в $\Sub(\ll V \rr \times \ll s \rr)$ и $\ll \varphi \rr \to \ll \forall (x : s) \psi \rr$ в $\Sub(\ll V \rr)$, где $\pi_1 : \ll V \rr \times \ll s \rr \to \ll V \rr$.
+\item Таким образом, $\ll \forall (x : s) \psi \rr$ можно определить как $\forall_{\pi_1}(\ll \psi \rr)$, где $\forall_{\pi_1} : \Sub(\ll V \rr \times \ll s \rr) \to \Sub(\ll V \rr)$ -- правый сопряженный к $\pi_1^* : \Sub(\ll V \rr) \to \Sub(\ll V \rr \times \ll s \rr)$.
 \end{itemize}
 \end{frame}
 
@@ -453,7 +459,7 @@
 \frametitle{Гейтинговы категории}
 \begin{itemize}
 \item Категория называется \emph{гейтинговой}, если она регулярна, у любого объекта существует минимальный подобъект и объединения подобъектов,
-и для любого морфизма $f : X \to Y$ существует правый сопряженный функтор $\forall_f : \Sub(Y) \to \Sub(X)$ к функтору $f^* : \Sub(Y) \to \Sub(X)$.
+и для любого морфизма $f : X \to Y$ существует правый сопряженный функтор $\forall_f : \Sub(X) \to \Sub(Y)$ к функтору $f^* : \Sub(Y) \to \Sub(X)$.
 \item Так как гейтингова категория регулярна, то у функтора $f^*$ есть и левый сопряженный. Таким образом, мы получаем цепочку сопряженных функторов:
 \[ \exists_f \dashv f^* \dashv \forall_f \]
 \item Мы не требуем, чтобы $f^*$ сохранял наименьший подобъект и объединения, так как это следует из того, что он левый сопряженный.
@@ -461,18 +467,21 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{$\forall$ коммутирует с подстановкой}
-Чтобы доказать, что $\forall$ коммутирует с подстановкой, нам нужно доказать, что для любого пулбэка слева квадрат функторов справа коммутирует с точностью до изоморфизма.
+\frametitle{Beck-Chevalley condition}
+Чтобы доказать лемму о подстановке, докажем вспомогательное утверждение:
+\begin{prop}[bc][Beck-Chevalley condition]
+Для любого пулбэка слева квадрат функторов справа коммутирует.
 \[ \xymatrix{ P \ar[r]^h \ar[d]_k \pb & A \ar[d]^f \\
               B \ar[r]_g              & C
             } \qquad
    \xymatrix{ \Sub(A) \ar[r]^{h^*} \ar[d]_{\forall_f} & \Sub(P) \ar[d]^{\forall_k} \\
               \Sub(C) \ar[r]_{g^*}                    & \Sub(B)
             } \]
+\end{prop}
 \end{frame}
 
 \begin{frame}
-\frametitle{$\forall$ коммутирует с подстановкой}
+\frametitle{Beck-Chevalley condition}
 \begin{itemize}
 \item Функторы в правом квадрате являются правыми сопряженными к следующим функторам:
 \[ \xymatrix{ \Sub(A)              & \Sub(P) \ar[l]_{\exists_h} \\
@@ -483,15 +492,57 @@
 \end{frame}
 
 \begin{frame}
+\frametitle{Лемма о подстановке}
+Применим это утверждение к следующему пулбэку:
+\[ \xymatrix{ \ll U \rr \times \ll s \rr \ar[rr]^{\ll \rho \rr \times \id_{\ll s \rr}} \ar[d]_{\pi_1} \pb & & \ll V \rr \times \ll s \rr \ar[d]^{\pi_1} \\
+              \ll U \rr \ar[rr]_{\ll \rho \rr}                                                            & & \ll V \rr
+            } \]
+Тогда коммутативность правого квадрата означает, что $\ll \rho \rr^*(\forall_{\pi_1}(X)) = \forall_{\pi_1}((\ll \rho \rr \times \id_{\ll s \rr})^*(X))$ для любого подобъекта $X \hookrightarrow \ll V \rr \times \ll s \rr$.
+Это в точности дает нам лемму о подстановке:
+\[ \ll (\forall (x : s) \varphi)[\rho] \rr = \forall_{\pi_1}((\ll \rho \rr \times \id_{\ll s \rr})^*(\ll \varphi \rr)) = \ll \rho \rr^*(\forall_{\pi_1}(\ll \varphi \rr)) \]
+\end{frame}
+
+\begin{frame}
 \frametitle{Импликация}
 \begin{itemize}
-\item Интерпретация импликации определяется так же как интерпретация экспонент.
-\item То есть $\ll \varphi \to (-) \rr : \Sub(X) \to \Sub(X)$ -- правый сопряженный к $\ll \varphi \land - \rr = \ll \varphi \rr \cap -$.
-\item Так как $A \cap -$ является композицией
-\[ \Sub(X) \xrightarrow{f^*} \Sub(A) \xrightarrow{\exists_f} \Sub(X) \]
-где $f : A \hookrightarrow X$, то правый сопряженный к нему существует в любой гейтинговой категориии.
+\item Правила вывода для импликации выглядят следующим образом:
+\begin{center}
+\AxiomC{$\chi \land \varphi \sststile{}{} \psi$}
+\UnaryInfC{$\chi \sststile{}{} \varphi \to \psi$}
+\DisplayProof
+\quad
+\AxiomC{$\chi \sststile{}{} \varphi \to \psi$}
+\AxiomC{$\chi \sststile{}{} \varphi$}
+\BinaryInfC{$\chi \sststile{}{} \psi$}
+\DisplayProof
+\end{center}
+\item Эти правила аналогичны правилам для типа функций в лямбда-исчислении.
+\item Таким образом, $\ll \varphi \to (-) \rr : \Sub(\ll V \rr) \to \Sub(\ll V \rr)$ интерпретируется как правый сопряженный к $\ll \varphi \land - \rr = \ll \varphi \rr \cap - : \Sub(\ll V \rr) \to \Sub(\ll V \rr)$.
+\item Корректность правил вывода следует из сопряжения аналогично случаю лямбда-исчисления.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Импликация}
+\begin{itemize}
+\item Легко показать, что $\ll \varphi \rr \cap -$ является композицией
+\[ \Sub(\ll V \rr) \xrightarrow{\ll \varphi \rr^*} \Sub(d_\varphi) \xrightarrow{\exists_{\ll \varphi \rr}} \Sub(\ll V \rr) \]
+\item Следовательно, правый сопряженный к нему существует в любой гейтинговой категориии.
 \item Таким образом, мы можем проинтерпретировать $\varphi \to \psi$ как $\forall_{\ll \varphi \rr} (\ll \varphi \rr^*(\psi))$.
-\item Так как $\forall_{\ll \varphi \rr}$ и $\ll \varphi \rr^*$ коммутируют с подстановкой, то и интерпретация импликации с ней коммутирует.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Лемма о подстановке}
+\begin{itemize}
+\item Чтобы доказать леммы подстановке, применим Beck-Chevalley condition к следующему пулбэку:
+\[ \xymatrix{ d_{\varphi[\rho]} \ar[r]^h \ar[d]_{k = \rho^*(\ll \varphi \rr)} \pb & d_\varphi \ar[d]^{\ll \varphi \rr} \\
+              \ll U \rr \ar[r]_\rho                                               & \ll V \rr
+            } \]
+\item Тогда получаем, что $\forall_k(h^*(X)) = \rho^*(\forall_{\ll \varphi \rr}(X))$ для всех $X$.
+\item Теперь легко доказать лемму о подстановке:
+\[ \ll (\varphi \to \psi)[\rho] \rr = \ll \varphi[\rho] \to \psi[\rho] \rr = \forall_k(k^*(\rho^*(\ll \psi \rr))) = \]
+\[ \forall_k(h^*(\ll \varphi \rr^*(\ll \psi \rr))) = \rho^*(\forall_{\ll \varphi \rr}(\ll \varphi \rr^*(\ll \psi \rr))) = \rho^*(\ll \varphi \to \psi \rr) \]
 \end{itemize}
 \end{frame}
 
