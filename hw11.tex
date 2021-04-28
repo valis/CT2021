@@ -1,0 +1,67 @@
+\documentclass[draft]{article}
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[all]{xy}
+\usepackage{stmaryrd}
+\usepackage{bussproofs}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\D}{\cat{D}}
+\newcommand{\y}{\cat{y}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+\newcommand{\red}{\Rightarrow}
+\renewcommand{\ll}{\llbracket}
+\newcommand{\rr}{\rrbracket}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\newcommand{\im}{\mathrm{Im}}
+\newcommand{\bool}{\mathrm{Bool}}
+\newcommand{\true}{\mathrm{true}}
+\newcommand{\false}{\mathrm{false}}
+\newcommand{\andb}{\mathrm{and}}
+\newcommand{\orb}{\mathrm{or}}
+\newcommand{\inj}{\mathrm{inj}}
+
+\newcommand{\ev}{\mathrm{ev}}
+\newcommand{\zero}{\mathrm{zero}}
+\newcommand{\suc}{\mathrm{suc}}
+\newcommand{\rec}{\mathrm{rec}}
+
+\newenvironment{tolerant}[1]{\par\tolerance=#1\relax}{\par}
+
+\begin{document}
+
+\title{Задания}
+\maketitle
+
+\begin{enumerate}
+
+\item Пусть $\C$ -- конечно полная категория.
+Тогда для любого морфизма $f : A \to B$ можно определть функтор $f^* : \mathrm{Sub}(B) \to \mathrm{Sub}(A)$, где $\mathrm{Sub}(X)$ -- полная подкатегория $\C/X$, объекты которой -- это стрелки $Y \to X$, являющиеся мономорфизмами.
+Докажите, что следующие утверждения эквивалентны:
+\begin{enumerate}
+\item У любого морфизма $f : A \to B$ существует образ $\mathrm{im}\,f \hookrightarrow B$.
+\item Для любого морфизма $f : A \to B$ у функтора $f^*$ есть левый сопряженный функтор $\exists_f : \mathrm{Sub}(A) \to \mathrm{Sub}(B)$.
+\end{enumerate}
+
+\item Пусть $\C$ -- конечно полная категория. На лекции доказывалось, что если в $\C$ можно проинтерпретировать $\bot$ (то есть у любого объекта существует наименьший подобъект и наименьшие подобъекты стабильны относительно пулбэков), то в $\C$ есть строгий начальный объект.
+Докажите обратное утверждение, то есть что, если в $\C$ есть строгий начальный объект, то в ней можно проинтерпретировать $\bot$.
+
+\item Категория $\C$ называется локально декартово замкнутой, если в ней существуют конечные пределы и $\C/A$ является декартово замкнутой для любого объекта $A$.
+Докажите, что если в локально декартово замкнутой регулярной категории существуют все конечные суммы, то она гейтингова.
+
+\end{enumerate}
+
+\end{document}

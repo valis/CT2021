@@ -1,0 +1,608 @@
+\documentclass{beamer}
+
+\usepackage{etex}
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+\usepackage{stmaryrd}
+\usepackage{bussproofs}
+\usepackage{turnstile}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\renewcommand{\turnstile}[6][s]
+    {\ifthenelse{\equal{#1}{d}}
+        {\sbox{\first}{$\displaystyle{#4}$}
+        \sbox{\second}{$\displaystyle{#5}$}}{}
+    \ifthenelse{\equal{#1}{t}}
+        {\sbox{\first}{$\textstyle{#4}$}
+        \sbox{\second}{$\textstyle{#5}$}}{}
+    \ifthenelse{\equal{#1}{s}}
+        {\sbox{\first}{$\scriptstyle{#4}$}
+        \sbox{\second}{$\scriptstyle{#5}$}}{}
+    \ifthenelse{\equal{#1}{ss}}
+        {\sbox{\first}{$\scriptscriptstyle{#4}$}
+        \sbox{\second}{$\scriptscriptstyle{#5}$}}{}
+    \setlength{\dashthickness}{0.111ex}
+    \setlength{\ddashthickness}{0.35ex}
+    \setlength{\leasturnstilewidth}{2em}
+    \setlength{\extrawidth}{0.2em}
+    \ifthenelse{%
+      \equal{#3}{n}}{\setlength{\tinyverdistance}{0ex}}{}
+    \ifthenelse{%
+      \equal{#3}{s}}{\setlength{\tinyverdistance}{0.5\dashthickness}}{}
+    \ifthenelse{%
+      \equal{#3}{d}}{\setlength{\tinyverdistance}{0.5\ddashthickness}
+        \addtolength{\tinyverdistance}{\dashthickness}}{}
+    \ifthenelse{%
+      \equal{#3}{t}}{\setlength{\tinyverdistance}{1.5\dashthickness}
+        \addtolength{\tinyverdistance}{\ddashthickness}}{}
+        \setlength{\verdistance}{0.4ex}
+        \settoheight{\lengthvar}{\usebox{\first}}
+        \setlength{\raisedown}{-\lengthvar}
+        \addtolength{\raisedown}{-\tinyverdistance}
+        \addtolength{\raisedown}{-\verdistance}
+        \settodepth{\raiseup}{\usebox{\second}}
+        \addtolength{\raiseup}{\tinyverdistance}
+        \addtolength{\raiseup}{\verdistance}
+        \setlength{\lift}{0.8ex}
+        \settowidth{\firstwidth}{\usebox{\first}}
+        \settowidth{\secondwidth}{\usebox{\second}}
+        \ifthenelse{\lengthtest{\firstwidth = 0ex}
+            \and
+            \lengthtest{\secondwidth = 0ex}}
+                {\setlength{\turnstilewidth}{\leasturnstilewidth}}
+                {\setlength{\turnstilewidth}{2\extrawidth}
+        \ifthenelse{\lengthtest{\firstwidth < \secondwidth}}
+            {\addtolength{\turnstilewidth}{\secondwidth}}
+            {\addtolength{\turnstilewidth}{\firstwidth}}}
+        \ifthenelse{\lengthtest{\turnstilewidth < \leasturnstilewidth}}{\setlength{\turnstilewidth}{\leasturnstilewidth}}{}
+    \setlength{\turnstileheight}{1.5ex}
+    \sbox{\turnstilebox}
+    {\raisebox{\lift}{\ensuremath{
+        \makever{#2}{\dashthickness}{\turnstileheight}{\ddashthickness}
+        \makehor{#3}{\dashthickness}{\turnstilewidth}{\ddashthickness}
+        \hspace{-\turnstilewidth}
+        \raisebox{\raisedown}
+        {\makebox[\turnstilewidth]{\usebox{\first}}}
+            \hspace{-\turnstilewidth}
+            \raisebox{\raiseup}
+            {\makebox[\turnstilewidth]{\usebox{\second}}}
+        \makever{#6}{\dashthickness}{\turnstileheight}{\ddashthickness}}}}
+        \mathrel{\usebox{\turnstilebox}}}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\y}{\cat{y}}
+\newcommand{\D}{\cat{D}}
+\newcommand{\E}{\cat{E}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Mon}{\cat{Mon}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+\newcommand{\red}{\Rightarrow}
+\renewcommand{\ll}{\llbracket}
+\newcommand{\rr}{\rrbracket}
+\newcommand{\Mod}[1]{#1\text{-}\cat{Mod}}
+\newcommand{\repl}{:=}
+
+\newcommand{\fs}[1]{\mathrm{#1}}
+\newcommand{\id}{\fs{id}}
+\newcommand{\im}{\fs{Im}}
+\newcommand{\Sub}{\fs{Sub}}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Категориальная логика}
+\author{Валерий Исаев}
+\maketitle
+
+\section{Интерпретация}
+
+\subsection{Подстановка}
+
+\begin{frame}
+\frametitle{Подстановка}
+\begin{itemize}
+\item Пусть $U$ и $V$ -- $\mathcal{S}$-индексированные множества переменных. Тогда подстановка из $U$ в $V$ (обозначается $\rho : U \to V$) -- это просто $V$-индексированное множество термов $\{ \rho(x) \in \fs{Term}(V)_s \}_{(x : s) \in V}$.
+\item Подстановка $(x := a)$ -- это просто $\rho$ такая, что $\rho(x) = a$ и $\rho(y) = y$ для любого $y \neq x$.
+\item Если $\rho : U \to V$ и $t \in \fs{Term}(V)_s$, то $t[\rho]$ -- это терм в $t \in \fs{Term}(U)_s$, который определяется рекурсивно:
+\begin{itemize}
+\item Если $t = x$, то $t[\rho] = \rho(x)$.
+\item Если $t = f(t_1, \ldots t_k)$, то $t[\rho] = f(t_1[\rho], \ldots t_k[\rho])$.
+\end{itemize}
+\item Подстановка $\varphi[\rho]$ в формулы определяется рекурсией по построению $\varphi$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация подстановки в термах}
+Если $\rho : U \to V$, то мы определяем $\ll \rho \rr : \ll U \rr \to \ll V \rr$ как $\langle \rho(x) \rangle_{x \in V}$.
+\begin{lem}
+Если $t \in \fs{Term}(V)_s$ и $\rho : U \to V$, то $\ll t[\rho] \rr = \ll \rho \rr \circ \ll t \rr$.
+\end{lem}
+\begin{proof}
+Индукцией по построению $t$.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация подстановки в формулах}
+\begin{lem}
+Если $\varphi \in \fs{Form}_\Sigma(V)$ и $\rho : U \to V$, то существует (уникальный) морфизм $d_{\varphi[\rho]} \to d_\varphi$ такой, что следующий квадрат является пулбэком:
+\[ \xymatrix{ d_{\varphi[\rho]} \ar[r] \ar[d]_{\ll \varphi[\rho] \rr} \pb & d_\varphi \ar[d]^{\ll \varphi \rr} \\
+              \ll U \rr \ar[r]_-{\ll \rho \rr}        & \ll V \rr
+            } \]
+\end{lem}
+\begin{itemize}
+\item Доказывается индукцией по построению $\varphi$.
+\item Сейчас мы проверим это утверждение только для атомарных формул, так как мы вводили только их пока.
+\item Для других связок проверим позже.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация подстановки}
+Если $\varphi = R(t_1, \ldots t_k)$, то мы получаем следующую диаграму:
+\[ \xymatrix{ d_{\varphi[\rho]} \ar[r] \ar[d]_{\ll \varphi[\rho] \rr} \pb & d_\varphi \ar[d]^{\ll \varphi \rr} \ar[rr] \pb                                        & & d_R \ar[d]^{\ll R \rr} \\
+              \ll U \rr \ar[r]_-{\ll \rho \rr}            & \ll V \rr \ar[rr]_-{\langle \ll t_1 \rr, \ldots \ll t_k \rr \rangle} & & \ll s_1 \rr \times \ldots \times \ll s_k \rr
+            } \]
+Правый квадрат -- это определение интерпретации $R(t_1, \ldots t_k)$.
+Композиция нижних стрелок -- это $\langle \ll t_1[\rho] \rr, \ldots \ll t_k[\rho] \rr \rangle$.
+По определению интерпретации $R(t_1[\rho], \ldots t_k[\rho])$ у на есть стрелка $d_{\varphi[\rho]} \to d_R$ такая, что внешний прямоугольник является пулбэком.
+По свойствам пулбэков у нас есть стрелка $d_{\varphi[\rho]} \to d_\varphi$ такая, что левый квадрат является пулбэком.
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация подстановки}
+Если $\varphi = (t_1 = t_2)$, то в следующей диаграмме $\ll \varphi \rr$ по определению является уравнителем $\ll t_1 \rr, \ll t_2 \rr : \ll V \rr \to \ll s \rr$, а $\ll \varphi[\rho] \rr$ является уравнителем $\ll t_1 \rr \circ \ll \rho \rr$, $\ll t_2 \rr \circ \ll \rho \rr : \ll U \rr \to \ll s \rr$.
+\[ \xymatrix{ d_{\varphi[\rho]} \ar[r] \ar[d]_{\ll \varphi[\rho] \rr} \pb & d_\varphi \ar[d]^{\ll \varphi \rr} \\
+              \ll U \rr \ar[r]_-{\ll \rho \rr}        & \ll V \rr \ar@<-.5ex>[r]_{\ll t_2 \rr} \ar@<.5ex>[r]^{\ll t_1 \rr} & \ll s \rr
+            } \]
+По универсальному свойству уравнителей у нас есть стрелка $d_{\varphi[\rho]} \to d_\varphi$ и квадрат является пулбэком.
+\end{frame}
+
+\subsection{Корректность интерпретации}
+
+\begin{frame}
+\frametitle{Правила вывода}
+Во всех наших логиках будут следующие правила вывода:
+\begin{center}
+\AxiomC{}
+\UnaryInfC{$\varphi \sststile{}{V} \psi \land \varphi$}
+\DisplayProof
+\qquad
+\AxiomC{$\varphi \sststile{}{V} \psi$}
+\AxiomC{$\psi \sststile{}{V} \chi$}
+\BinaryInfC{$\varphi \sststile{}{V} \chi$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\varphi \sststile{}{U} \psi$}
+\UnaryInfC{$\varphi[\rho] \sststile{}{V} \chi[\rho]$}
+\DisplayProof
+\end{center}
+С добавлением логических связок будут добавляться и правила вывода.
+\end{frame}
+
+\begin{frame}
+\frametitle{Корректность интерпретации}
+\begin{itemize}
+\item Разумеется мы хотим, чтобы интерпретация уважала правила вывода.
+\item Первые два правила очевидны: $\ll \varphi \rr$ является подобъектом самого себя и, если $\ll \varphi \rr$ является подобъектом $\ll \psi \rr$ и $\ll \psi \rr$ является подобъектом $\ll \chi \rr$, то $\ll \varphi \rr$ является подобъектом $\ll \chi \rr$.
+\item Третье правило следует из леммы об интерпретации подстановки.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Корректность $\top$}
+\begin{itemize}
+\item Правило вывода для $\top$:
+\[ \varphi \sststile{}{} \top \]
+\item Чтобы доказать, что эта аксиома всегда корректна, нужно проверить, что для любой подобъект $d_\varphi \hookrightarrow V$ является подобъектом $\ll \top \rr = id_V : V \hookrightarrow V$, что очевидно.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Корректность $\land$}
+\begin{itemize}
+\item Правила вывода для $\land$:
+\begin{center}
+\AxiomC{$\varphi \sststile{}{} \psi$}
+\AxiomC{$\varphi \sststile{}{} \chi$}
+\BinaryInfC{$\varphi \sststile{}{} \psi \land \chi$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\varphi \sststile{}{} \psi \land \chi$}
+\UnaryInfC{$\varphi \sststile{}{} \psi$}
+\DisplayProof
+\quad
+\AxiomC{$\varphi \sststile{}{} \psi \land \chi$}
+\UnaryInfC{$\varphi \sststile{}{} \chi$}
+\DisplayProof
+\end{center}
+\item Эти правила уважаются, так как по определению пулбэков стрелка $\ll \varphi \rr \to \ll \psi \rr \cap \ll \chi \rr$ существует тогда и только тогда, когда существуют стрелки $\ll \varphi \rr \to \ll \psi \rr$ и $\ll \varphi \rr \to \ll \chi \rr$.
+\end{itemize}
+\end{frame}
+
+\section{Регулярные теории}
+
+\begin{frame}
+\frametitle{Интерпретация $\exists$}
+\begin{itemize}
+\item Теории, в которых формулы состоят только из равенств, конъюнкций, $\top$ и $\exists$ называются \emph{регулярными}.
+\item Мы не можем проинтерпретировать $\exists$ в произвольной конечно полной категории.
+\item Категории, где можно это сделать, называются \emph{регулярными}.
+\item Формальное определение будет дано ниже.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация $\exists$ в $\Set$}
+\begin{itemize}
+\item Пусть $\ll \varphi(x, x_1, \ldots x_n) \rr : d_\varphi \hookrightarrow \ll s \rr \times \ll s_1 \rr \times \ldots \times \ll s_n \rr$.
+\item Как проинтерпретировать $\exists (x : s) (\varphi(x, x_1 \ldots x_n))$?
+\item Если рассмотреть $\pi_{1, \ldots n} \circ \ll \varphi \rr : d_\varphi \to \ll s_1 \rr \times \ldots \times \ll s_n \rr$, то это почти дает нам интерпретацию $\exists (x : s) (\varphi(x, x_1, \ldots x_n))$,
+так как прообраз некоторого элемента $(a_1, \ldots a_n)$ населен тогда и только тогда, когда существует $a \in \ll s \rr$, такой что $(a, a_1, \ldots a_n) \in \ll \varphi \rr$.
+\item Единственная проблема заключается в том, что $\pi_{1, \ldots n} \circ \ll \varphi \rr$ не является мономорфизмом.
+\item Мы можем решить эту проблему, определив интерпретацию $\exists (x : s) (\varphi(x, x_1, \ldots x_n))$ как образ $\pi_{1, \ldots n} \circ \ll \varphi \rr$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Образ морфизма}
+\begin{itemize}
+\item Мы можем обобщить понятие образа функции на произвольную категорию.
+\item \emph{Образ} морфизма $f : A \to B$ -- это наименьший мономорфизм $\im\,f \hookrightarrow B$, через который $f$ факторизуется.
+\item Другими словами, существует стрелка $A \to \im\,f$, такая что для любых стрелок $g : A \to C$ и $h : C \hookrightarrow B$ если $h \circ g = f$,
+то $\im\,f$ является подобъектом $C$:
+\[ \xymatrix{                               & \im\,f \ar[dr] \ar@{-->}[dd] &   \\
+              A \ar[ur] \ar[dr]_g \ar[rr]_f &                              & B \\
+                                            & C \ar[ur]_h
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация существования}
+\begin{itemize}
+\item В произвольной категории образ может не существовать, но он уникален, если существует.
+\item Если предположить, что в категории существуют образы, то можно попробовать проинтерпретировать существование так же как и в $\Set$.
+\item Если $\ll \varphi(x, x_1, \ldots x_n) \rr : d_\varphi \hookrightarrow \ll s \rr \times \ll s_1 \rr \times \ldots \times \ll s_n \rr$,
+то мы определяем $\ll \exists (x : s) \varphi \rr$ как образ $\pi_{1, \ldots n} \circ \ll \varphi \rr$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация подстановки}
+\begin{itemize}
+\item Так как правила вывода для существования используют подстановку, нам нужно знать как она интерпретируется, чтобы проверить эти правила.
+\item Утверждене: если $\varphi$ -- формула со свободными переменными в $\{ x_1 : s_1, \ldots x_n : s_n \}$ и $t_1$, \ldots $t_n$ -- термы сортов $s_1$, \ldots $s_n$,
+то $\ll \varphi[x_1 \repl t_1, \ldots x_n \repl t_n] \rr$ является пулбэком $d_\varphi$:
+\[ \xymatrix{ d_{\varphi[x_1 \repl t_1, \ldots x_n \repl t_n]} \ar[r] \ar[d]_{\ll \varphi[x_1 \repl t_1, \ldots x_n \repl t_n] \rr} \pb & d_\varphi \ar[d]^{\ll \varphi \rr} \\
+              V \ar[r]_-{\langle t_1, \ldots t_n \rangle}                                                                               & \ll s_1 \rr \times \ldots \times \ll s_n \rr
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация подстановки}
+\begin{itemize}
+\item Доказывать это утверждение мы будем индукцией по $\varphi$.
+\item Для $\top$ это очевидно, так как пулбэк тождественного морфизма -- тождественный морфизм.
+\item Проверим для равенства. Пусть $\ll t \rr, \ll t' \rr : \ll s_1 \rr \times \ldots \times \ll s_n \rr \to \ll s' \rr$ и $\ll t_i \rr : V \to \ll s_i \rr$.
+Тогда нужно показать, что морфизм $E \to V$ в диаргамме ниже является уровнителем $\ll t \rr \circ \langle \ll t_1 \rr, \ldots \ll t_n \rr \rangle$ и $\ll t' \rr \circ \langle \ll t_1 \rr, \ldots \ll t_n \rr \rangle$,
+что легко сделать, используя универсальное свойство пулбэков.
+\[ \xymatrix{ E \ar[rr] \ar[d] \pb                                          & & d_{t = t'} \ar[d]^{\ll t = t' \rr} \\
+              V \ar[rr]_-{\langle \ll t_1 \rr, \ldots \ll t_n \rr \rangle}  & & \ll s_1 \rr \times \ldots \times \ll s_n \rr \ar@<-.5ex>[r]_-{\ll t' \rr} \ar@<.5ex>[r]^-{\ll t \rr} & \ll s' \rr
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация подстановки в $\exists$}
+\begin{itemize}
+\item Даже если в категории существуют образы всех морфизмов, они могут не коммутировать с пулбэками.
+\item Категория называется \emph{регулярной}, если у всех морфизмов существуют образы, и они стабильны относительно пулбэков.
+\item Таким образом, в любой регулярной категории подстановка действительно интерпретируется как пулбэк.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Корректность интерпретации $\exists$}
+\begin{itemize}
+\item Правила вывода для $\exists$:
+\begin{center}
+\AxiomC{$\exists (x : s) \varphi \sststile{}{} \psi$}
+\UnaryInfC{$\varphi \sststile{}{} \psi$}
+\DisplayProof
+\quad
+\AxiomC{$\varphi \sststile{}{} \psi$}
+\UnaryInfC{$\exists (x : s) \varphi \sststile{}{} \psi$}
+\DisplayProof
+\end{center}
+\item Обратите внимание, что $\psi$ определен в контексте $x_1, \ldots x_n$, но используется также и в контексте $x_1, \ldots x_n, x$.
+По лемме об интерпретации подстановки $\psi$ во втором контексте интерпретируется как пулбэк.
+\item Используя этот факт, легко показать, что данные правила корректны.
+\end{itemize}
+\end{frame}
+
+\section{Когерентные теории}
+
+\begin{frame}
+\frametitle{Определение}
+\begin{itemize}
+\item Категория называется \emph{когерентной}, если она регулярна, для любого объекта $A$ в порядке подобъектов $\Sub(A)$ существуют все конечные копроизведения,
+и для любого морфизма $f : A \to B$ функтор $f^* : \Sub(B) \to \Sub(A)$ сохраняет их.
+\item Эта дополнительная структура -- это в точности то, что необходимо для интерпретации ложного утверждения и дизъюнкций.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Дистрибутивность пересечений}
+\begin{prop}
+В когерентной категории пересечении дистрибутивно над объединением подобъектов: $A \cap (B \cup C) \simeq (A \cap B) \cup (A \cap C)$ и $A \cap 0 = 0$.
+\end{prop}
+\begin{proof}
+Функтор $A \cap - : \Sub(X) \to \Sub(X)$ можно определить как композицию
+\[ \Sub(X) \xrightarrow{f^*} \Sub(A) \xrightarrow{\exists_f} \Sub(X) \]
+где $f : A \to X$ и $\exists_f$ -- левый сопряженный к $f^*$.
+Функтор $f^*$ сохраняет копроизведения по предположению когерентности, а $\exists_f$ сохраняет копределы как левый сопряженный.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Начальный объект}
+\only<1>{
+\begin{prop}
+В когерентной категории существует строгий начальный объект.
+\end{prop}
+}
+\begin{proof}
+\only<1>{
+Определим 0 как наименьший подобъект 1.
+Заметим, что $\pi_1 : X \times 0 \hookrightarrow X$ является наименьшим подобъектом $X$.
+Если у нас есть стрелка $X \to 0$, то $\pi_1$ является изоморфизмом.
+Другими словами, он является и наибольшим подобъектом $X$.
+Следовательно, у любого такого $X$ ровно один подобъект -- он сам.
+}
+\only<2>{
+Докажем, что если есть морфизм $A \to 0$, то $A$ является подобъектом 1.
+Дествительно, если у нас есть пара стрелок $f,g : B \to A$,
+то так как у нас есть стрелка $B \to 0$, то уравнитель $f$ и $g$ является изоморфизмом, то есть $f$ и $g$ равны.
+Следовательно $X \times 0$ изоморфен 0, то есть 0 -- строгий.
+
+Докажем, что 0 -- начальный.
+Так как у нас есть стрелка из $X \times 0$ в 0, то $X \times 0 \simeq 0$, а значит у нас есть стрелка из $0$ в $X$.
+Если у нас есть стрелки $f,g : 0 \to X$, то их уравнитель является подобъектом 0, а значит изоморфизмом, то есть $f$ и $g$ равны.
+}
+\end{proof}
+\end{frame}
+
+\section{Импликация и $\forall$}
+
+\begin{frame}
+\frametitle{Квантор всеобщности}
+\begin{itemize}
+\item Правила вывода для $\forall$ дуальны правилам для $\exists$:
+\begin{center}
+\AxiomC{$\varphi \sststile{}{} \forall (x : s) \psi$}
+\UnaryInfC{$\varphi \sststile{}{} \psi$}
+\DisplayProof
+\quad
+\AxiomC{$\varphi \sststile{}{} \psi$}
+\UnaryInfC{$\varphi \sststile{}{} \forall (x : s) \psi$}
+\DisplayProof
+\end{center}
+\item То есть у нас есть биекция между стрелками $\pi_1^*(\ll \varphi \rr) \to \ll \psi \rr$ в $\Sub(X \times \ll s \rr)$ и $\ll \varphi \rr \to \ll \forall (x : s) \psi \rr$ в $\Sub(X)$, где $\pi_1 : X \times \ll s \rr \to X$.
+\item Таким образом, $\ll \forall (x : s) \psi \rr$ можно определить как $\forall_{\pi_1}(\ll \psi \rr)$, где $\forall_{\pi_1} : \Sub(X \times \ll s \rr) \to \Sub(X)$ -- правый сопряженный к $\pi_1^* : \Sub(X) \to \Sub(X \times \ll s \rr)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Гейтинговы категории}
+\begin{itemize}
+\item Категория называется \emph{гейтинговой}, если она регулярна, у любого объекта существует минимальный подобъект и объединения подобъектов,
+и для любого морфизма $f : X \to Y$ существует правый сопряженный функтор $\forall_f : \Sub(Y) \to \Sub(X)$ к функтору $f^* : \Sub(Y) \to \Sub(X)$.
+\item Так как гейтингова категория регулярна, то у функтора $f^*$ есть и левый сопряженный. Таким образом, мы получаем цепочку сопряженных функторов:
+\[ \exists_f \dashv f^* \dashv \forall_f \]
+\item Мы не требуем, чтобы $f^*$ сохранял наименьший подобъект и объединения, так как это следует из того, что он левый сопряженный.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\forall$ коммутирует с подстановкой}
+Чтобы доказать, что $\forall$ коммутирует с подстановкой, нам нужно доказать, что для любого пулбэка слева квадрат функторов справа коммутирует с точностью до изоморфизма.
+\[ \xymatrix{ P \ar[r]^h \ar[d]_k \pb & A \ar[d]^f \\
+              B \ar[r]_g              & C
+            } \qquad
+   \xymatrix{ \Sub(A) \ar[r]^{h^*} \ar[d]_{\forall_f} & \Sub(P) \ar[d]^{\forall_k} \\
+              \Sub(C) \ar[r]_{g^*}                    & \Sub(B)
+            } \]
+\end{frame}
+
+\begin{frame}
+\frametitle{$\forall$ коммутирует с подстановкой}
+\begin{itemize}
+\item Функторы в правом квадрате являются правыми сопряженными к следующим функторам:
+\[ \xymatrix{ \Sub(A)              & \Sub(P) \ar[l]_{\exists_h} \\
+              \Sub(C) \ar[u]^{f^*} & \Sub(B) \ar[l]^{\exists_g} \ar[u]_{k^*} 
+            } \]
+\item Так как этот квадрат коммутирует по регулярности, то квадрат на предыдущем слайде коммутирует по уникальности правых сопряженных функторов.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Импликация}
+\begin{itemize}
+\item Интерпретация импликации определяется так же как интерпретация экспонент.
+\item То есть $\ll \varphi \to (-) \rr : \Sub(X) \to \Sub(X)$ -- правый сопряженный к $\ll \varphi \land - \rr = \ll \varphi \rr \cap -$.
+\item Так как $A \cap -$ является композицией
+\[ \Sub(X) \xrightarrow{f^*} \Sub(A) \xrightarrow{\exists_f} \Sub(X) \]
+где $f : A \hookrightarrow X$, то правый сопряженный к нему существует в любой гейтинговой категориии.
+\item Таким образом, мы можем проинтерпретировать $\varphi \to \psi$ как $\forall_{\ll \varphi \rr} (\ll \varphi \rr^*(\psi))$.
+\item Так как $\forall_{\ll \varphi \rr}$ и $\ll \varphi \rr^*$ коммутируют с подстановкой, то и интерпретация импликации с ней коммутирует.
+\end{itemize}
+\end{frame}
+
+\section{Теория типов}
+
+\begin{frame}
+\frametitle{Интерпретация зависимых типов}
+\begin{itemize}
+\item Утверждения в контексте $x_1 : A_1, \ldots x_n : A_n$ мы интерпретировали как мономорфизмы $X \hookrightarrow \ll A_1 \rr \times \ldots \times \ll A_n \rr$.
+\item В теории типов это означает, что если тип $B$ в контексте $\Gamma$ является утверждением, то мы его интерпретируем как такой мономорфизм.
+\item Если $B$ -- произвольный тип, то он интерпретируется как произвольная стрелка $\ll B \rr \to \ll \Gamma \rr$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерпретация $\Sigma$ и $\Pi$}
+\begin{itemize}
+\item $\Sigma$ и $\Pi$ типы интерпретируются как $\exists$ и $\forall$, только вместо категорий подобъектов $\Gamma$ мы рассматриваем категории всех объектов над $\Gamma$.
+\item Таким образом, эти конструкции будут интерпретироваться через функторы $\Sigma_f,\Pi_f : \C/\Gamma \to \C/\Delta$:
+\[ \Sigma_f \dashv f^* \dashv \Pi_f \]
+где $f^* : \C/\Delta \to \C/\Gamma$ -- пулбэк функтор.
+\item $\Sigma_f$ существует всегда, он определяется как $\Sigma_f(g) = f \circ g$.
+\item Конечно полная категория называется \emph{локально декартово замкнутой}, если $\Pi_f$ существует для любого морфизма $f : \Gamma \to \Delta$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Существование $\Pi$}
+\only<1>{
+\begin{prop}
+Категория $\C$ локально декартово замкнута тогда и только тогда, когда для любого ее объекта $\Gamma$ категория $\C/\Gamma$ декартово замкнута.
+\end{prop}
+}
+\begin{proof}
+\only<1>{
+В одну сторону доказательство такое же как для импликаций.
+Функтор $A \times - : \C/\Gamma \to \C/\Gamma$ равен следующей композиции:
+\[ \C/\Gamma \xrightarrow{p_A^*} \C/A \xrightarrow{\Sigma_A} \C/\Gamma \]
+где $p_A : A \to \Gamma$.
+Следовательно экспоненту $B^A$ в $\C/\Gamma$ можно определить как $\Pi_A(p_A^*(B))$.
+}
+\only<2>{
+\quad Пусть $\C$ -- декартово замкнутая категория с конечными пределами.
+Докажем, что для любого объекта $A$ у функтора $!_A^* : \C \to \C/A$ есть правый сопряженный $\Pi_A : \C/A \to \C$.
+
+\quad Мы можем определить $\Pi_A(B)$ как объект функций $f : A \to B$, таких что $p_B \circ f = id_A$.
+Формально, $\Pi_A(B)$ определяется как уравнитель стрелок $\ll \lambda f a. p_B(f(a)) \rr, \ll \lambda f a. a \rr : B^A \to A^A$.
+
+\quad Теперь мы можем закончить доказательство.
+Если для всех $\Gamma$ категория $\C/\Gamma$ декартово замкнута, то $\C$ -- конечно полна, так как произведения в $\C/\Gamma$ -- это пулбэки в $\C$.
+Более того, существование $\Pi$ следует из доказанного свойства, примененного к категории $\C/\Gamma$.
+}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Правила вывода для $\Sigma$}
+\begin{center}
+\AxiomC{$\Gamma \vdash a : A$}
+\AxiomC{$\Gamma \vdash b : B[x \repl a]$}
+\BinaryInfC{$\Gamma \vdash (a,b) : \Sigma (x : A)\,B$}
+\DisplayProof
+\end{center}
+
+\begin{center}
+\AxiomC{$\Gamma \vdash p : \Sigma (x : A)\,B$}
+\UnaryInfC{$\Gamma \vdash \pi_1\,p : A$}
+\DisplayProof
+\qquad
+\AxiomC{$\Gamma \vdash p : \Sigma (x : A)\,B$}
+\UnaryInfC{$\Gamma \vdash \pi_2\,p : B[x \repl \pi_1\,p]$}
+\DisplayProof
+\end{center}
+Термы $\Gamma \vdash a : A$ интерпретируются как сечения морфизма $p_A : \ll A \rr \to \ll \Gamma \rr$.
+
+Если $\ll a \rr : \ll \Gamma \rr \to \ll A \rr$ и $\ll b \rr : \ll \Gamma \rr \to \ll a \rr^*(\ll B \rr)$,
+то $\ll (a,b) \rr$ определяется как композиция $\ll b \rr$ и $\ll a \rr^*(\ll B \rr) \to \ll B \rr$.
+
+Если $\ll p \rr : \ll \Gamma \rr \to \ll B \rr$, то $\ll \pi_1\,p \rr = p_A \circ \ll p \rr$ и $\ll \pi_2\,p \rr$ определяется по универсальному свойству пулбэков.
+\end{frame}
+
+\begin{frame}
+\frametitle{Правила вывода для $\Pi$}
+\begin{center}
+\AxiomC{$\Gamma, x : A \vdash b : B$}
+\UnaryInfC{$\Gamma \vdash \lambda x.\,b : \Pi (x : A)\,B$}
+\DisplayProof
+\end{center}
+По сопряженности у нас есть биекция между сечениями $\Pi_{p_A}(\ll B \rr) \to \ll \Gamma \rr$ и $p_B : \ll B \rr \to \ll A \rr$.
+Так как $\ll b \rr : \ll A \rr \to \ll B \rr$ -- сечение, то мы можем определить интерпретацию $\lambda x.\,b$ как сечение $\Pi_{p_A}(\ll B \rr) \to \ll \Gamma \rr$.
+
+\begin{center}
+\AxiomC{$\Gamma \vdash f : \Pi (x : A)\,B$}
+\AxiomC{$\Gamma \vdash a : A$}
+\BinaryInfC{$\Gamma \vdash f\,a : B[x \repl a]$}
+\DisplayProof
+\end{center}
+Так как $\ll f \rr : \ll \Gamma \rr \to \Pi_{p_A}(\ll B \rr)$ -- сечение, то по биекции мы получаем сечение $f' : \ll A \rr \to \ll B \rr$.
+Интерпретацию $f\,a$ можно определить по универсальному свойству пулбэков.
+Для этого нужно построить стрелку $\ll \Gamma \rr \to \ll B \rr$.
+Мы определяем ее как композицию $\ll a \rr : \ll \Gamma \rr \to \ll A \rr$ и $f' : \ll A \rr \to \ll B \rr$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Проблемы интерпретации}
+\begin{itemize}
+\item На самом деле, так определить интерпретацию нельзя, так как не получится доказать лемму о подстановке.
+\item В отличие от интерпретации кванторов, здесь нам нужно доказывать равенство не подобъектов, а объектов.
+\item Проблема в том, что у нас нет равенства, есть только изоморфизм.
+\item Эту проблему можно исправлять различными способами, но мы их рассматривать не будем.
+\end{itemize}
+\end{frame}
+
+\end{document}
