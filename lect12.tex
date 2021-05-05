@@ -1,0 +1,486 @@
+\documentclass{beamer}
+
+\usepackage{etex}
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+\usepackage{stmaryrd}
+\usepackage{bussproofs}
+\usepackage{turnstile}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\renewcommand{\turnstile}[6][s]
+    {\ifthenelse{\equal{#1}{d}}
+        {\sbox{\first}{$\displaystyle{#4}$}
+        \sbox{\second}{$\displaystyle{#5}$}}{}
+    \ifthenelse{\equal{#1}{t}}
+        {\sbox{\first}{$\textstyle{#4}$}
+        \sbox{\second}{$\textstyle{#5}$}}{}
+    \ifthenelse{\equal{#1}{s}}
+        {\sbox{\first}{$\scriptstyle{#4}$}
+        \sbox{\second}{$\scriptstyle{#5}$}}{}
+    \ifthenelse{\equal{#1}{ss}}
+        {\sbox{\first}{$\scriptscriptstyle{#4}$}
+        \sbox{\second}{$\scriptscriptstyle{#5}$}}{}
+    \setlength{\dashthickness}{0.111ex}
+    \setlength{\ddashthickness}{0.35ex}
+    \setlength{\leasturnstilewidth}{2em}
+    \setlength{\extrawidth}{0.2em}
+    \ifthenelse{%
+      \equal{#3}{n}}{\setlength{\tinyverdistance}{0ex}}{}
+    \ifthenelse{%
+      \equal{#3}{s}}{\setlength{\tinyverdistance}{0.5\dashthickness}}{}
+    \ifthenelse{%
+      \equal{#3}{d}}{\setlength{\tinyverdistance}{0.5\ddashthickness}
+        \addtolength{\tinyverdistance}{\dashthickness}}{}
+    \ifthenelse{%
+      \equal{#3}{t}}{\setlength{\tinyverdistance}{1.5\dashthickness}
+        \addtolength{\tinyverdistance}{\ddashthickness}}{}
+        \setlength{\verdistance}{0.4ex}
+        \settoheight{\lengthvar}{\usebox{\first}}
+        \setlength{\raisedown}{-\lengthvar}
+        \addtolength{\raisedown}{-\tinyverdistance}
+        \addtolength{\raisedown}{-\verdistance}
+        \settodepth{\raiseup}{\usebox{\second}}
+        \addtolength{\raiseup}{\tinyverdistance}
+        \addtolength{\raiseup}{\verdistance}
+        \setlength{\lift}{0.8ex}
+        \settowidth{\firstwidth}{\usebox{\first}}
+        \settowidth{\secondwidth}{\usebox{\second}}
+        \ifthenelse{\lengthtest{\firstwidth = 0ex}
+            \and
+            \lengthtest{\secondwidth = 0ex}}
+                {\setlength{\turnstilewidth}{\leasturnstilewidth}}
+                {\setlength{\turnstilewidth}{2\extrawidth}
+        \ifthenelse{\lengthtest{\firstwidth < \secondwidth}}
+            {\addtolength{\turnstilewidth}{\secondwidth}}
+            {\addtolength{\turnstilewidth}{\firstwidth}}}
+        \ifthenelse{\lengthtest{\turnstilewidth < \leasturnstilewidth}}{\setlength{\turnstilewidth}{\leasturnstilewidth}}{}
+    \setlength{\turnstileheight}{1.5ex}
+    \sbox{\turnstilebox}
+    {\raisebox{\lift}{\ensuremath{
+        \makever{#2}{\dashthickness}{\turnstileheight}{\ddashthickness}
+        \makehor{#3}{\dashthickness}{\turnstilewidth}{\ddashthickness}
+        \hspace{-\turnstilewidth}
+        \raisebox{\raisedown}
+        {\makebox[\turnstilewidth]{\usebox{\first}}}
+            \hspace{-\turnstilewidth}
+            \raisebox{\raiseup}
+            {\makebox[\turnstilewidth]{\usebox{\second}}}
+        \makever{#6}{\dashthickness}{\turnstileheight}{\ddashthickness}}}}
+        \mathrel{\usebox{\turnstilebox}}}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+\newref{remark}{remark}{Remark}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\y}{\cat{y}}
+\newcommand{\D}{\cat{D}}
+\newcommand{\E}{\cat{E}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Mon}{\cat{Mon}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+\newcommand{\red}{\Rightarrow}
+\renewcommand{\ll}{\llbracket}
+\newcommand{\rr}{\rrbracket}
+\newcommand{\Mod}[1]{#1\text{-}\cat{Mod}}
+\newcommand{\repl}{:=}
+
+\newcommand{\fs}[1]{\mathrm{#1}}
+\newcommand{\im}{\fs{Im}}
+\newcommand{\bool}{\fs{Bool}}
+\newcommand{\true}{\fs{true}}
+\newcommand{\false}{\fs{false}}
+\newcommand{\Hom}{\fs{Hom}}
+\newcommand{\id}{\fs{id}}
+
+\newcommand{\ev}{\fs{ev}}
+\newcommand{\zero}{\fs{zero}}
+\newcommand{\suc}{\fs{suc}}
+\newcommand{\fst}{\fs{fst}}
+\newcommand{\snd}{\fs{snd}}
+\newcommand{\unit}{\fs{unit}}
+\newcommand{\Prop}{\fs{Prop}}
+\newcommand{\Sub}{\fs{Sub}}
+\newcommand{\El}{\fs{El}}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Элементарные топосы}
+\author{Валерий Исаев}
+\maketitle
+
+\section{Классификатор подобъектов}
+
+\begin{frame}
+\frametitle{Классификатор подобъектов в $\Set$}
+\begin{itemize}
+\item В $\Set$ существует биекция между подмножествами некоторого множества $A$ и предикатами $A \to 2$.
+\item Если $2 = \{ \top, \bot \}$ и $f : A \to 2$, то соответствующее подмножество $A$ можно определить как $f^{-1}(\top)$.
+\item Эту конструкцию можно переформулировать категориально.
+Пусть $\true : 1 \to 2$ -- функция, выбирающая элемент $\top$.
+Тогда любому морфизму $f : A \to 2$ мы можем сопоставить подобъект $A$ -- пулбэк $\true$ вдоль $f$.
+\item В $\Set$ эта конструкция взаимно однозначна. В произвольной категории это может быть не верно.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Определение классификатора подобъектов}
+Пусть в $\C$ существует терминальный объект 1.
+Тогда объект $\Omega$ вместе с морфизмом $\true : 1 \to \Omega$ называется \emph{классификатором подобъектов},
+если для любого мономорфизма $f : A' \hookrightarrow A$ существует уникальный морфизм $\chi_f : A \to \Omega$, такой что следующий квадрат является пулбэком:
+\[ \xymatrix{ A' \ar@{^{(}->}[d]_f \ar[r] & 1 \ar@{^{(}->}[d]^{\true} \\
+              A \ar@{-->}[r]_{\chi_f} & \Omega
+            } \]
+Другими словами, функция $(-)^*(\fs{true}) : \Hom(A,\Omega) \to \Sub(A)$ должна быть биекцией для любого $A$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Другое определение классификатора подобъектов}
+\begin{defn}
+Мономорфизм $\true : \widehat{\Omega} \to \Omega$ называется \emph{классификатором подобъектов},
+если для любого мономорфизма $f : A' \hookrightarrow A$ существует уникальный морфизм $\chi_f : A \to \Omega$, такой что $\chi_f^*(\fs{true})(f)$ и $f$ равны как подобъекты $B$.
+\end{defn}
+\begin{remark}
+Это определение эквивалентно предыдущему.
+Другими словами, можно доказать, что $\widehat{\Omega}$ всегда является терминальным объектом (упражнение).
+\end{remark}
+\end{frame}
+
+\begin{frame}
+\frametitle{Свойства}
+\begin{itemize}
+\item Классификатор подобъектов уникален с точностью до изоморфизм
+\item Классификатор подобъектов в когерентной категории является внутренней дистрибутивной решеткой.
+\item В категории с классификатором подобъектов любой мономорфизм регулярен (упражнение).
+\item Категории с классификатором подобъектов являются сбалансированными.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Примеры}
+\begin{itemize}
+\item В $\Set$ двухэлементное множество является классификатором подобъектов.
+\item В категории пунктированных множеств двухэлементное множество также является классификатором подобъектов.
+\item В категориях групп, моноидов и колец нет классификатора подобъектов, так как в них не любой мономорфизм регулярен.
+\end{itemize}
+\end{frame}
+
+\section{Определение топосов}
+
+\begin{frame}
+\frametitle{Определение топосов}
+\begin{defn}
+\emph{(Элементарный) топос} -- это категория, в которой существуют конечные пределы, классификатор подобъектов $\Omega$ и для любого $A$ экспонента $\Omega^A$.
+\end{defn}
+
+Примеры топосов:
+\begin{itemize}
+\item Категории предпучков.
+\item Эффективный топос.
+\item Синтаксическая категория подходящего языка.
+\end{itemize}
+\end{frame}
+
+\subsection{Эффективный топос}
+
+\begin{frame}
+\frametitle{Частичные комбинаторные алгебры}
+\begin{itemize}
+\item \emph{Частичная комбинаторная алгебра} -- это множество $A$ вместе с частичной функцией $\cdot : A \times A \to A$, такое что существуют константы $k,s \in A$, удовлетворяющие следующим равенствам:
+\begin{align*}
+k \cdot x \cdot y & = x \\
+s \cdot x \cdot y \cdot z & = x \cdot z \cdot (y \cdot z)
+\end{align*}
+\item Частичная комбинаторная алгебра -- это алгебраическая модель нетипизированного лямбда исчисления.
+\item Пример: $A$ -- множество нетипизированных лямбда термов по отношению $\beta \eta$-эквивалентности, $\cdot$ -- аппликация.
+\item Пример: $A = \mathbb{N}$, $n \cdot m = \varphi(n)(m)$, где $\varphi$ -- некоторая нумерация вычислимых функций.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Сборки}
+\begin{itemize}
+\item \emph{$A$-сборка} -- это множество $X$ вместе с отношением $\Vdash$ на $A \times X$, таким что для любого $x \in X$ существует $a \in A$, такой что $a \Vdash x$, и, если $a \Vdash x$ и $a \Vdash y$, то $x = y$.
+\item Морфизм $A$-сборок $X$ и $Y$ -- это функция $f : X \to Y$, такая что существует $r \in A$, реализующий $f$, то есть если $a \Vdash x$, то $r \cdot a \Vdash f(x)$.
+\item Категория $A$-сборок не является топосом (но является квазитопосом).
+\item Эту категорию можно расширить, получив топос.
+\item Такой топос, когда $A$ -- второй пример с предыдущего слайда, называется \emph{эффективным топосом}.
+\end{itemize}
+\end{frame}
+
+\subsection{Синтаксическая категория}
+
+\begin{frame}
+\frametitle{Язык}
+\begin{itemize}
+\item Если мы добавим в язык с зависимыми типами достаточное количество конструкций, то его синтаксическая категория (почти) будет топосом.
+\item Конкретно, нам нужно добавить вселенную утверждений $Prop$ и правило, которое говорит, что она содержит все утверждения.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Замкнутость вселенной}
+\begin{itemize}
+\item Обычно еще добавляют правила, которые говорят, что вселенная замкнута относительно различных конструкций: конъюнкций, дизъюнкций, и так далее.
+\item Если мы добавляем правило, которое говорит, что она замкнута относительно всех утверждений, то это не нужно делать.
+\item В частности, это означает, что в любом топосе можно проинтерпретировать такие правила.
+\end{itemize}
+\end{frame}
+
+\subsection{Категория предпучков}
+
+\begin{frame}
+\frametitle{Классификатор подобъектов в категории предпучков}
+\only<1>{
+\begin{prop}
+В любой категории предпучков существует классификатор подобъектов.
+\end{prop}
+}
+У нас должна быть биекция между множеством подобъектов объекта $A$ и $\Hom(A,\Omega)$.
+Но по лемме Йонеды должно быть верно $\Omega_a = \Hom(\cat{y} a, \Omega)$.
+Следовательно, мы можем определить $\Omega_a$ как множество подобъектов $\cat{y} a$.
+Подобъект такого предпучка -- это множество $S$ морфизмов с кодоменом $a$, такое что $f \in S$ влечет $f \circ h \in S$ для любого $h$, для которого $f \circ h$ определено.
+Множество морфизмов с таким свойством называется \emph{решетом} на $a$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Доказательство (продолжение)}
+Таким образом, мы определяем $\Omega_a$ как множество решет на $a$.
+Если $f : a \to b$, то $\Omega_f(S) = \{ g | f \circ g \in S \}$.
+
+Подобъект предпучка $B$ можно задать как семейство $\{ \beta_x \subseteq B_x \mid \forall f : y \to x, \beta_x \subseteq B_f^{-1}(\beta_y) \}_x$.
+Таким образом, нам нужно показать, что следующая функция является биекцией:
+\begin{align*}
+& Q : \Hom(B,\Omega) \to \Sub(B) \\
+& Q : \alpha \mapsto \{ \{ b \mid \alpha_x(b) = \top \} \}_x
+\end{align*}
+Обратную функцию можно задать следующим образом:
+\[ R : \beta \mapsto \{ \lambda b.\,\{ g : y \to x \mid B_g(b) \in \beta_y \} \}_x \]
+Естественность $R(\beta)$ следует из функториальности $B$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Доказательство (продолжение)}
+Докажем, что $R(Q(\alpha)) = \alpha$:
+\[ R(Q(\alpha)) = \{ \lambda b.\,\{ g : y \to x \mid \alpha_y(B_g(b)) = \top \} \}_x \]
+По естественности $\alpha$ верно $\alpha_y(B_g(b)) = \Omega_g(\alpha_x(b))$, а условие $\Omega_g(\alpha_x(b)) = \top$ эквивалентно тому, что любой $h : z \to y$ принадлежит $\Omega_g(\alpha_x(b))$, что верно в точности, если для любого $h : z \to y$ стрелка $g \circ h$ приндлежит $\alpha_x(b)$.
+Таким образом
+\[ R(Q(\alpha))_x(b) = \{ g : y \to x \mid \forall h : z \to y, g \circ h \in \alpha_x(b) \} \]
+Если $g \in R(Q(\alpha))_x(b)$, то очевидно $g \in \alpha_x(b)$.
+Наоборот, если $g \in \alpha_x(b)$, то $g \in R(Q(\alpha))_x(b)$, так как $\alpha_x(b)$ -- решето.
+Следовательно $R(Q(\alpha))_x(b) = \alpha_x(b)$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Доказательство (конец)}
+Докажем, что $Q(R(\beta)) = \beta$:
+\[ Q(R(\beta)) = \{ \{ b \mid \{ g : y \to x \mid B_g(b) \in \beta_y \} = \top \} \}_x \]
+\[ = \{ \{ b \mid \forall g : y \to x, B_g(b) \in \beta_y \} \}_x \]
+Если $b \in Q(R(\beta))_x$, то очевидно $b \in \beta_x$.
+Обратная импликация верна, так как $\beta \in \Sub(B)$.
+Следовательно $Q(R(\beta))_x = \beta_x$.
+\end{frame}
+
+\section{Свойства топосов}
+
+\begin{frame}
+\frametitle{Синглтоны}
+\begin{itemize}
+\item Для любого $A$ существует морфизм $\{-\}_A : A \to \Omega^A$, о котором можно думать так, что каждому $a$ из $A$ он сопоставляет предикат $A \to \Omega$, который верен только на $a$.
+Другими словами, если думать о предикате как о подмножестве, то он возвращает синглтон -- подмножество, состоящее из одного элемента.
+\item Этот морфизм можно определить как каррирование $\chi_\Delta : A \times A \to \Omega$, где $\Delta : A \hookrightarrow A \times A$ -- диагональ.
+\item Таким образом, $\chi_\Delta$ -- это просто предикат равенства.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Свойства синглтонов}
+\begin{prop}
+Морфизм $\{-\}_A : A \to \Omega^A$ является мономорфизмом.
+\end{prop}
+\begin{proof}
+Пусть $a,a' : \Gamma \to A$ -- морфизмы, такие что $\{-\}_A \circ a = \{-\}_A \circ a'$.
+Тогда стрелки $\Gamma \times A \xrightarrow{a \times \id} A \times A \xrightarrow{\chi_\Delta} \Omega$ и $\Gamma \times A \xrightarrow{a' \times \id} A \times A \xrightarrow{\chi_\Delta} \Omega$ также равны.
+Но $((a \times \id) \circ \chi_\Delta)^*(\fs{true}) = (a \times \id)^* \chi_\Delta^*(\fs{true}) = (a \times \id)^* (\Delta) = \langle \id, a \rangle : \Gamma \to \Gamma \times A$.
+Из равенства стрелок выше следует, что $\langle \id, a \rangle$ и $\langle \id, a' \rangle$ изоморфны как подобъекты $\Gamma \times A$.
+Композиция с первой проекцией показывает, что этот изоморфизм равен $\id_\Gamma$, а композиция со второй показывает, что $a = a'$.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Декартова замкнутость}
+\begin{prop}
+Любой топос является декартово замкнутым.
+\end{prop}
+Скетч доказательства.
+
+Мы определим экспоненту $B^A$ так же как и в $\Set$ (то есть как $\{ f : A \times B \to \Omega \mid \forall a : A, \exists! (b : B), f(a,b) = \top \}$).
+Конкретно, $B^A$ будет уравнителем двух стрелок $\Omega^{A \times B} \to \Omega^A$.
+Эти стрелки определяются как карирование стрелок $f,g : \Omega^{A \times B} \times A \to \Omega$.
+Стрелка $f$ задается как композиция $\Omega^{A \times B} \times A \xrightarrow{\fs{ev}} \Omega^B \xrightarrow{\chi_{\{-\}_B}} \Omega$.
+Стрелка $g$ задается как композиция $\Omega^{A \times B} \times A \to 1 \xrightarrow{\fs{true}} \Omega$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Декартова замкнутость}
+Чтобы задать $\ev : B^A \times A \to B$, зададим сначала $B^A \times A \to \Omega^B$ и покажем, что он факторизуется через $\{-\}_B$.
+Этот морфизм задается как композиция
+\[ B^A \times A \xrightarrow{e \times \id} \Omega^{A \times B} \times A \xrightarrow{\fs{ev}} \Omega^B \]
+где $e$ -- уравнитель из определения $B^A$.
+Стрелка факторизуется через $\{-\}_B$ тогда и только тогда, когда ее композиция с $\chi_{\{-\}_B}$ факторизуется через $\fs{true}$.
+Для данной стрелки это верно по определению уравнителя $e$.
+
+Универсальное свойство мы проверять не будем.
+\end{frame}
+
+\begin{frame}
+\frametitle{Фундаментальная теорема теории топосов}
+\only<1>{
+\begin{prop}
+Если $A$ -- некоторый объект топоса $\C$, то $\C/A$ также является топосом.
+\end{prop}
+}
+\begin{proof}
+\only<1>{
+Очевидно в $\C/A$ существуют все конечные пределы.
+Классификатор подобъектов определяется просто как $\Omega_A = A^*(\Omega)$.
+Подобъекты некоторого $(B,p_B) \in \C/A$ -- это просто подобъекты $B$ в $\C$.
+С другой стороны у нас есть биекция $\Hom_\C(B,\Omega) \simeq \Hom_{\C/A}((B,p_B), \Omega_A)$.
+Откуда следует, что $\Omega_A$ является классификатором подобъектов в $\C/A$.
+}
+\only<2>{
+Теперь мы хотим показать, что для любого $(B,p_B) \in \C/A$ существует $\Omega_A^{(B,p_B)} \in \C/A$.
+Для такого объекта должны выполняться следующие равенства: $\Hom_{\C/A}(X,\Omega_A^{(B,p_B)}) \simeq \Hom_{\C/A}(X \times_A (B,p_B), \Omega_A) \simeq \Hom_\C(X \times_A B, \Omega)$.
+Но морфизмы $X \times_A B \to \Omega$ -- это просто подобъекты $X \times_A B$.
+Но этот объект сам является подобъектом $X \times B$.
+Таким образом, это множество состоит из тех морфизмов $p : X \times B \to \Omega$, которые задают подобъект, содержащий $X \times_A B$.
+}
+\only<3>{
+Пусть $q : X \times B \to \Omega$, $q = \chi_{X \times_A B}$.
+Тогда это множество можно описать как $\{ p : X \times B \to \Omega\ |\ (\lambda t : X \times B. p(t) \land q(t)) = p \}$.
+Или как $\{ p' : X \to \Omega^B\ |\ (\lambda x : X. \lambda b : B. p'(x)(b) \land q(x,b)) = p' \}$.
+Или как множество $p' : X \to \Omega^B$, таких что $\langle p', p_X \rangle : X \to \Omega^B \times A$ уравнивает
+стрелки $f,g : \Omega^B \times A \to \Omega^B$, где $f = \pi_1$ и $g = (\lambda (s,a) b. s(b) \land p_B(b) = a)$.
+И, следовательно, как соответствующее подмножество множества морфизмов $\Hom_{\C/A}(X,A^*(\Omega^B))$.
+Следовательно, мы можем определить $\Omega_A^{(B,p_B)}$ как уравнитель $f$ и $g$.
+}
+\alt<3>{\qedhere}{\phantom\qedhere}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Регулярность топосов}
+\begin{itemize}
+\item Любой топос -- регулярная категория.
+\item Образ $A \to 1$ можно определить как $\Pi_\Omega(\fs{true}^{\fs{true}^{p}})$, где $p = \pi_2 : A \times \Omega \to \Omega$, а $\Pi_\Omega : \C/\Omega \to \C$ -- правый сопряженный к $\Omega \times - : \C \to \C/\Omega$.
+\item В нотации теории типов эта конструкция записывается следующим образом:
+\[ \| A \| = \prod_{X : \Omega} (A \to X) \to X \]
+\item Для произвольного морфизма $A \to \Gamma$ образ получается применением этой конструкции в $\C/\Gamma$.
+\item Стабильность относительно пулбэков следует из стабильности $\Omega$, $\Pi$ и $\Sigma$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Операции над подобъектами}
+\begin{itemize}
+\item Используя $\Omega$, легко сконструировать наименьший подобъет и объединение подобъектов.
+\item Сделаем это сначала для терминального объекта.
+\item Пусть $A$ и $B$ -- подобъекты терминального объекта, тогда определим их объединение как
+\[ A \cup B = \prod\limits_{X : \Omega} (A \to X) \to (B \to X) \to X. \]
+\item Легко сконструировать стрелку $A \to A \cup B$, конкретно, $\lambda a X f g. f\,a$. Аналогично определяется стрелка $B \to A \cup B$.
+\item Теперь, если $C$ -- подобъект терминального объекта и $f : A \to C$, $g : B \to C$, то существует стрелка $A \cup B \to C$, конкретно, $\lambda d. d\,C\,f\,g$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Когерентность топосов}
+\begin{itemize}
+\item Начальный подобъект конструируется аналогичным образом: $0 = \prod\limits_{X : \Omega} X$.
+\item Аналогчино для любого подобъекта $C$ существует стрелка $0 \to C$, конкретно $\lambda d. d\,C$.
+\item Если $\Gamma$ -- произвольный объект, то можно определить эти операции над подобъектами $\Gamma$.
+\item Действительно, так как $\C/\Gamma$ является топосом, то в нем эти операции определены для терминального объекта.
+Но терминальный объект в нем -- это $\Gamma$.
+\item Эти операции стабильны относительно пулбэков по аналогичным соображениям.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Конечные суммы}
+\begin{itemize}
+\item Следовательно, любой топос -- когерентная категория, а значит в нем существует начальный объект.
+\item Так как $B \amalg C$ должно быть подобъектом $\Omega^{B \amalg C}$, а этот объект изоморфен $\Omega^B \times \Omega^C$, то мы можем определить $B \amalg C$ как некоторый подобъект этого произведения.
+\item Пусть $B' = \langle \{ -\}_B, \bot \rangle : B \hookrightarrow \Omega^B \times \Omega^C$ и $C' = \langle \bot, \{ -\}_C \rangle : C \hookrightarrow \Omega^B \times \Omega^C$.
+\item Тогда мы определяем $B \amalg C$ как объединение $B'$ и $C'$.
+\item Универсальное свойство мы проверять не будем.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Коуравнители}
+\begin{itemize}
+\item Мы хотим построить коуравнитель $f,g : R \to A$.
+\item Если $R \to R' \xrightarrow{\langle f', g' \rangle} A \times A$ -- образ $\langle f, g \rangle$, то несложно показать, что коуравнитель $f',g'$ также будет коуравнителем $f,g$.
+\item Если $R'' \xrightarrow{\langle f'', g'' \rangle} A \times A$ -- рефлексивное симметричное транзитивное замыкание $R' \xrightarrow{\langle f', g' \rangle} A \times A$, то несложно показать, что коуравнитель $f'',g''$ также будет коуравнителем $f',g'$.
+\item Такое замыкание можно определить как пересечение всех отношений эквивалентности, содержащих $R'$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Коуравнители}
+\begin{itemize}
+\item Пересечение множества подмножеств некоторого множества строится при помощи квантора всеобщности и импликации, которые есть в любой локально декартово замкнутой категории.
+\item Коуравнитель отношения эквивалентности можно определить как множество классов эквивалентности, то есть подобъектов $A$ вида $\{ a' : A \mid R''(a,a') \}$.
+\item Другими словами, мы определяем коуравнитель $f'',g''$ как образ стрелки $A \to \Omega^A$, соответствующей $\langle f'', g'' \rangle : R'' \hookrightarrow A \times A$.
+\end{itemize}
+\end{frame}
+
+\end{document}
